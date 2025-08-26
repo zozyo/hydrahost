@@ -1,11 +1,11 @@
 #!ipxe
 # Ubuntu 20.04.6 Live Server via kernel+initrd + ISO URL
-# casper hosted on GitHub (LFS), ISO from Canonical
+# casper from this repo (LFS), ISO from Canonical
 
-set iso_url   https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso
-set casper    https://raw.githubusercontent.com/jjziets/hydrahost/main/casper
-# NoCloud seed (must end with /). Make repo public so iPXE can fetch it:
-set seed_url  https://raw.githubusercontent.com/jjziets/hydrahost/main/autoinstall/
+set iso_url  https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso
+set casper   https://raw.githubusercontent.com/jjziets/hydrahost/main/casper
+# NoCloud seed (MUST end with /)
+set seed_url https://raw.githubusercontent.com/jjziets/hydrahost/main/autoinstall/
 
 dhcp
 
@@ -20,17 +20,17 @@ choose --timeout 10000 --default s1 sel || goto menu
 set common_args ip=dhcp url=${iso_url} fsck.mode=skip autoinstall ds=nocloud-net\;s=${seed_url}
 
 :s0
-set console console=ttyS0,115200n8
+set cons console=ttyS0,115200n8
 goto boot
 :s1
-set console console=ttyS1,115200n8
+set cons console=ttyS1,115200n8
 goto boot
 :vga
-set console ---
+set cons ---
 goto boot
 
 :boot
-echo Booting Ubuntu 20.04.6 with ${console}
-kernel ${casper}/vmlinuz ${common_args} ${console} ---
+echo Booting Ubuntu 20.04.6 with ${cons}
+kernel ${casper}/vmlinuz ${common_args} ${cons} ---
 initrd ${casper}/initrd
 boot || goto menu
