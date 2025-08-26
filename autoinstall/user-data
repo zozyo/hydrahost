@@ -1,0 +1,73 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+
+  # Host identity
+  identity:
+    hostname: hydra-node
+    username: ubuntu
+    # Generate with:  mkpasswd --method=SHA-512
+    password: "$6$rounds=4096$REPLACE_ME$REPLACE_ME.REPLACE_ME/"   # <-- change or remove if using SSH keys only
+
+  # Networking: DHCP on all NICs by default (good for most DCs).
+  # If you need static, replace with a netplan config here.
+  network:
+    network:
+      version: 2
+      ethernets:
+        all:
+          match: { name: "*" }
+          dhcp4: true
+          dhcp6: false
+          optional: true
+
+  # Install OpenSSH and prefer SSH keys; password auth disabled below.
+  ssh:
+    install-server: true
+    allow-pw: false
+    authorized-keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIYOUR_KEY_HERE hydra@laptop"   # <-- replace with your key
+
+  # Disk layout: wipe first disk and use LVM (root + swap). Adjust to taste.
+  storage:
+    layout:
+      name: lvm
+    # If you want to force a specific disk, uncomment the below and set the correct path:
+    # config:
+    #   - { ptable: gpt, path: /dev/nvme0n1, wipe: superblock-recursive, preserve: false, name: '', grub_device: true, type: disk }
+    #   - { device: /dev/nvme0n1, size: 1G, flag: bios_grub, number: 1, type: partition }
+    #   - ...
+
+  # Packages you usually want on fresh nodes
+  packages:
+    - openssh-server
+    - curl
+    - htop
+    - nvme-cli
+
+  # Optional APT tweaks (comment out if you want defaults)
+  #apt:
+  #  primary:
+  #    - arches: [default]
+  #      uri: http://archive.ubuntu.com/ubuntu
+
+  # Run after target is mounted but before reboot.
+  late-commands:
+    # Enable serial consoles commonly used in DCs
+    - curtin in-target --target=/target -- bash -c "echo 'GRUB_CMDLINE_LINUX=\"$GRUB_CMDLINE_LINUX console=ttyS0,115200n8 console=ttyS1,115200n8\"' >> /etc/default/grub"
+    - curtin in-target --target=/target update-grub
+
+    # Harden SSH: disable password auth explicitly (key-only)
+    - curtin in-target --target=/target -- bash -c "sed -ri 's/^#?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config"
+    - curtin in-target --target=/target systemctl enable ssh
+
+    # Quality-of-life: motd + stamp file for troubleshooting
+    - curtin in-target --target=/target -- bash -c "printf '%s\n' 'Hydra autoinstall complete' > /etc/motd"
+    - curtin in-target --target=/target -- bash -c "date > /root/HYDRA_AUTOINSTALL_DONE"
+
+  # Reboot after install
+  reboot: true
