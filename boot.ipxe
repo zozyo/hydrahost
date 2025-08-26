@@ -1,13 +1,11 @@
 #!ipxe
-# Ubuntu 20.04.6 Live Server (Subiquity) – kernel+initrd + ISO URL
-# Host these paths on your bridge/CDN close to the nodes.
+# Ubuntu 20.04.6 Live Server via kernel+initrd + ISO URL
+# casper hosted on GitHub (LFS), ISO from Canonical
 
-set base_url  https://brokkr.assets.hydra.host/ubuntu/20.04.6
-set casper    ${base_url}/casper
-set iso_url   ${base_url}/ubuntu-20.04.6-live-server-amd64.iso
-
-# OPTIONAL: autoinstall seed (NoCloud). Leave blank to go interactive.
-set seed_url  http://your-seed.example.com/autoinstall/   # must end with /
+set iso_url   https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso
+set casper    https://raw.githubusercontent.com/jjziets/hydrahost/main/casper
+# Optional autoinstall seed (must end with /). Comment out to go interactive:
+set seed_url  http://your-seed.example.com/autoinstall/
 
 dhcp
 
@@ -18,23 +16,22 @@ item s1  Serial ttyS1 (115200)
 item vga VGA console
 choose --timeout 10000 --default s1 sel || goto menu
 
-# Common kernel args
-set common_args ip=dhcp url=${iso_url} fsck.mode=skip \
-  autoinstall ds=nocloud-net;s=${seed_url}
+# Common kernel args (escape ';' in iPXE)
+set common_args ip=dhcp url=${iso_url} fsck.mode=skip autoinstall ds=nocloud-net\;s=${seed_url}
 
-:boot_s0
+:s0
 set console console=ttyS0,115200n8
-goto boot_common
+goto boot
 
-:boot_s1
+:s1
 set console console=ttyS1,115200n8
-goto boot_common
+goto boot
 
-:boot_vga
+:vga
 set console ---
-goto boot_common
+goto boot
 
-:boot_common
+:boot
 echo Booting Ubuntu 20.04.6 with ${console}
 kernel ${casper}/vmlinuz ${common_args} ${console} ---
 initrd ${casper}/initrd
