@@ -1,7 +1,3 @@
-Here’s a full `README.md` you can drop into your repo. It explains everything to a Hydra Host customer, step by step, with SSH key + password fallback support:
-
----
-
 # Hydra Host – Ubuntu 20.04.6 iPXE Autoinstall Example
 
 This repository provides a **ready-to-use iPXE script** and **autoinstall configuration** to deploy **Ubuntu 20.04.6 LTS (Focal)** on Hydra Host bare-metal servers.
@@ -148,6 +144,3 @@ autoinstall/
 * SSH in as `ubuntu` with your key or password.
 * Fork this repo and customize `user-data` for your team’s needs.
 
----
-
-Would you like me to also drop in a **static-IP example `user-data` block** into the README so customers can see DHCP vs static side by side?
