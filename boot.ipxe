@@ -4,8 +4,8 @@
 
 set iso_url   https://releases.ubuntu.com/focal/ubuntu-20.04.6-live-server-amd64.iso
 set casper    https://raw.githubusercontent.com/jjziets/hydrahost/main/casper
-# Optional autoinstall seed (must end with /). Comment out to go interactive:
-set seed_url  http://your-seed.example.com/autoinstall/
+# NoCloud seed (must end with /). Make repo public so iPXE can fetch it:
+set seed_url  https://raw.githubusercontent.com/jjziets/hydrahost/main/autoinstall/
 
 dhcp
 
@@ -16,17 +16,15 @@ item s1  Serial ttyS1 (115200)
 item vga VGA console
 choose --timeout 10000 --default s1 sel || goto menu
 
-# Common kernel args (escape ';' in iPXE)
+# Escape ';' in iPXE with '\;'
 set common_args ip=dhcp url=${iso_url} fsck.mode=skip autoinstall ds=nocloud-net\;s=${seed_url}
 
 :s0
 set console console=ttyS0,115200n8
 goto boot
-
 :s1
 set console console=ttyS1,115200n8
 goto boot
-
 :vga
 set console ---
 goto boot
