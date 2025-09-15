@@ -6,11 +6,11 @@ autoinstall:
   keyboard: { layout: us }
 
   identity:
-    hostname: hydra-node
+    hostname: in2
     username: ubuntu
     # SHA-512 *hashed* password (fallback login)
     # Generate your own and replace this:
-    password: "$6$rounds=4096$replace.this$w2b0jDk6W0s4e0..example../"
+    password: "5ff65366d222c83059b624760834b34816b85a98baf94a5245601229c816954e27d94365137b062e864ea7b74fb712b07ff07387eefb69a50072a3b3a85678a4"
 
   # Network: DHCP on any predictable-named ethernet (enp*/ens*/eno*)
   network:
@@ -28,9 +28,9 @@ autoinstall:
   ssh:
     install-server: true
     # keep password auth enabled as backup
-    allow-pw: true
+    allow-pw: false
     authorized-keys:
-      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIYOUR_REAL_KEY_HERE hydra@client"  # <-- replace me
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQV/O6WW4GCEhjGnjflGEAYa4pkdm5dv2a7xFtXpsGN zozyo@ZozyodeMacBook"  # <-- replace me
 
   storage:
     layout: { name: lvm }   # wipe first disk and create LVM root+swap
@@ -47,7 +47,7 @@ autoinstall:
     - curtin in-target --target=/target update-grub
 
     # Be explicit: keep SSH password auth ON (backup to your key)
-    - curtin in-target --target=/target -- bash -c "sed -ri 's/^#?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config"
+    - curtin in-target --target=/target -- bash -c "sed -ri 's/^#?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config"
     - curtin in-target --target=/target systemctl enable ssh
 
     # Stamp a success marker
