@@ -3,7 +3,7 @@
 # casper from this repo (LFS), ISO from Canonical
 
 set iso_url  https://releases.ubuntu.com/plucky/ubuntu-25.04-live-server-amd64.iso
-set casper   https://raw.githubusercontent.com/zozyo/hydrahost/main/casper
+set casper   https://releases.ubuntu.com/plucky/netboot/amd64/
 # NoCloud seed (MUST end with /)
 set seed_url https://raw.githubusercontent.com/zozyo/hydrahost/main/autoinstall/
 
@@ -31,6 +31,6 @@ goto boot
 
 :boot
 echo Booting Ubuntu 25.04 with ${cons}
-kernel ${casper}/vmlinuz ${common_args} ${cons} ---
+kernel ${casper}/linux ${common_args} ${cons} ---
 initrd ${casper}/initrd
 boot || goto menu
