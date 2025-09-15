@@ -2,7 +2,7 @@
 # Ubuntu 25.04 Live Server via kernel+initrd + ISO URL
 # casper from this repo (LFS), ISO from Canonical
 
-set iso_url  https://ubuntu.joy.services/ubuntu-releases/plucky/ubuntu-25.04-live-server-amd64.iso
+set iso_url  https://releases.ubuntu.com/plucky/ubuntu-25.04-live-server-amd64.iso
 set casper   https://raw.githubusercontent.com/zozyo/hydrahost/main/casper
 # NoCloud seed (MUST end with /)
 set seed_url https://raw.githubusercontent.com/zozyo/hydrahost/main/autoinstall/
